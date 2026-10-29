@@ -15,7 +15,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Open http://localhost:8000 for the app and http://localhost:8000/docs for the API docs.
+Open https://life-link-s631.onrender.com/ for the app and http://localhost:8000/docs for the API docs.
 Demo hospital login: `demo@citycare.com` / `hospital123`. 20 demo donors are seeded on first run.
 
 Test: `pip install httpx` then `python test_api.py`.
