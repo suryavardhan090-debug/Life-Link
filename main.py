@@ -178,7 +178,7 @@ def match_donors(con, blood_group, h_lat, h_lng, h_city, rare_mode):
 
 def donors_out(con, request_id: int):
     rows = con.execute(
-        """SELECT rd.*, d.name, d.blood_group, d.area, d.phone, d.availability
+        """SELECT rd.*, d.name, d.blood_group, d.area, d.phone, d.availability, d.lat, d.lng
            FROM request_donors rd JOIN donors d ON d.id = rd.donor_id
            WHERE rd.request_id=? ORDER BY rd.readiness DESC, rd.distance_km""",
         (request_id,),
@@ -195,6 +195,9 @@ def donors_out(con, request_id: int):
             "id": r["donor_id"], "name": r["name"], "g": r["blood_group"], "km": r["distance_km"],
             "sc": r["readiness"], "av": av, "area": r["area"] or "", "status": r["status"],
             "alerted": r["status"] != "idle",
+            # approximate position (about 1 km) so the hospital can see where help is coming from
+            "lat": round(r["lat"], 2) if r["lat"] is not None else None,
+            "lng": round(r["lng"], 2) if r["lng"] is not None else None,
         }
         if r["status"] == "accepted":  # contact is shared only after the donor accepts
             item["phone"] = r["phone"]
@@ -214,7 +217,9 @@ def counts_out(donors):
 
 def request_out(con, req, with_donors=True):
     donors = donors_out(con, req["id"])
+    h = con.execute("SELECT name, city, lat, lng FROM hospitals WHERE id=?", (req["hospital_id"],)).fetchone()
     out = {
+        "hospital": {"name": h["name"], "city": h["city"], "lat": h["lat"], "lng": h["lng"]} if h else None,
         "id": request_code(req["id"]), "blood_group": req["blood_group"], "units": req["units"],
         "urgency": req["urgency"], "radius_km": req["radius_km"], "context": req["context"],
         "notes": req["notes"], "rare_mode": bool(req["rare_mode"]), "status": req["status"],

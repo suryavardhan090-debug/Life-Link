@@ -17,7 +17,7 @@ uvicorn main:app --reload
 
 Open http://localhost:8000/ for the app and http://localhost:8000/docs for the API docs.
 Live demo: https://life-link-s631.onrender.com/ (the free Render plan sleeps when idle, so the first load can take about a minute).
-Demo hospital login: `demo@citycare.com` / `hospital123`. 20 demo donors are seeded on first run.
+Hospitals can register themselves on the Hospital Portal page. A seeded demo hospital also exists for testing: `demo@citycare.com` / `hospital123` (not shown on the website). 20 demo donors are seeded on first run.
 
 Test: `pip install httpx` then `python test_api.py`.
 
@@ -53,6 +53,7 @@ Test: `pip install httpx` then `python test_api.py`.
 - Donor endpoints have no login or OTP. Set `LIFELINK_REQUIRE_AUTH=1` to force hospital login.
 - The hospital dashboard reads live data from the API. The analytics page and the donor dashboard still show sample numbers (labelled "Sample data").
 - Donor replies in the Command Center are simulated for the demo (labelled "Demo simulation"). Real replies arrive through `POST /api/requests/{id}/respond`.
-- Call / WhatsApp buttons unlock only after a donor accepts, using the donor's real number.
+- The Command Center uses a real OpenStreetMap map (Leaflet) with donor and hospital positions. Donor positions are rounded to about 1 km.
+- Contact buttons unlock only after a donor accepts, and placeholder numbers of sample donors are never dialled.
 - Hospital sessions expire after 24 hours. Text fields reject `<` and `>`.
 - Final medical eligibility is always decided by the hospital or blood bank.
