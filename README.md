@@ -15,7 +15,8 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-Open https://life-link-s631.onrender.com/ for the app and http://localhost:8000/docs for the API docs.
+Open http://localhost:8000/ for the app and http://localhost:8000/docs for the API docs.
+Live demo: https://life-link-s631.onrender.com/ (the free Render plan sleeps when idle, so the first load can take about a minute).
 Demo hospital login: `demo@citycare.com` / `hospital123`. 20 demo donors are seeded on first run.
 
 Test: `pip install httpx` then `python test_api.py`.
@@ -50,5 +51,8 @@ Test: `pip install httpx` then `python test_api.py`.
 
 - Alerts are recorded in the database, but no real SMS/WhatsApp is sent yet (plug in Twilio or WhatsApp Cloud API in `create_request` and `expand_radius`).
 - Donor endpoints have no login or OTP. Set `LIFELINK_REQUIRE_AUTH=1` to force hospital login.
-- Hospital dashboard, analytics and donor dashboard pages still show demo numbers.
+- The hospital dashboard reads live data from the API. The analytics page and the donor dashboard still show sample numbers (labelled "Sample data").
+- Donor replies in the Command Center are simulated for the demo (labelled "Demo simulation"). Real replies arrive through `POST /api/requests/{id}/respond`.
+- Call / WhatsApp buttons unlock only after a donor accepts, using the donor's real number.
+- Hospital sessions expire after 24 hours. Text fields reject `<` and `>`.
 - Final medical eligibility is always decided by the hospital or blood bank.
