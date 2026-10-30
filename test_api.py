@@ -47,6 +47,8 @@ with TestClient(app) as c:
     pend = [d for d in req["donors"] if d["status"] == "pending"]
     assert pend and all(d["km"] <= 5 for d in pend)
     assert all(d["av"] == "A" for d in pend)
+    assert req["hospital"]["name"] == "City Care Hospital" and req["hospital"]["lat"] is not None
+    assert any(d["lat"] is not None for d in req["donors"])
     print("O- request:", req["counts"])
 
     # Rh+ patient can receive Rh- blood (B+ -> B-, O- included)
